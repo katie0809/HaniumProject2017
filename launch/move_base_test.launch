@@ -1,0 +1,44 @@
+<launch>
+    <node name="patrol" pkg="mappingbot" type="patrol.py" />
+    <!-- <node name="wander" pkg="mappingbot" type="wander.py"/-->
+
+    <param name="/use_sim_time" value="true"/>
+    <param name="robot_description" textfile="$(find mappingbot)/urdf/mappingbot.urdf"/>
+
+    <arg name="map_file"       default=" $(env TURTLEBOT_STAGE_MAP_FILE)"/> <!-- robopark_plan -->
+    <arg name="world_file"     default=" $(env TURTLEBOT_STAGE_WORLD_FILE)"/>
+    <arg name="initial_pose_x" default="2.0"/>
+    <arg name="initial_pose_y" default="2.0"/>
+    <arg name="initial_pose_a" default="0.0"/>
+
+    <!-- ******* AMCL *****  -->
+    <include file="$(find amcl)/examples/amcl_diff.launch"/>
+
+    <!--  ****** Maps ***** -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+    <!--  ************** Navigation  ***************
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find mappingbot)/params/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find mappingbot)/params/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="$(find mappingbot)/params/local_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find mappingbot)/params/global_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find mappingbot)/params/base_local_planner_params.yaml" command="load"/>
+
+    </node>
+    -->
+    <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
+
+    <!-- *********** Start Turtlebot_gazebo ******** -->
+    <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"/>
+
+    <!-- *********** Start Empty Gazebo world ******
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+    -->
+    <!-- load mappingbot.urdf file on param server & start empty world with mappingbot
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model mappingbot"/>
+    -->
+    <!-- *********** Hector Mapping ***** -->
+    <include file="$(find mappingbot)/launch/mapping_default.launch"/>
+
+</launch>
