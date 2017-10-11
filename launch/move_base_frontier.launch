@@ -1,0 +1,17 @@
+<launch>
+    <!-- <node name="wander" pkg="mappingbot" type="wander.py"/-->
+    <!--<node name="gmapping" pkg="gmapping" type="slam_gmapping"/>  *********** Gmapping *********** -->
+    <!--<node name="explore_server" pkg="frontier_exploration" type="frontier_exploration"/>explore server-->
+
+    <param name="/use_sim_time" value="true"/>
+    <!-- ******* AMCL *****
+    <include file="$(find amcl)/examples/amcl_diff.launch"/>-->
+
+    <!--  ************** Navigation  ***************-->
+    <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
+
+    <!-- *********** Start Turtlebot_gazebo ********
+    <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"/>
+    -->
+
+</launch>
