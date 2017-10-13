@@ -7,6 +7,7 @@ from nav_msgs.srv import GetMap
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from frontier_exploration.srv import UpdateBoundaryPolygon
 from frontier_exploration.msg import ExploreTaskAction, ExploreTaskGoal
+from mappingbot.srv import GetMapMetaData
 #from gmapping.srv import GetMapMetaData
 import actionlib
 import frontier_exploration.msg
@@ -23,8 +24,7 @@ def getAndWaitForActionServer(seviceName, actionClass):
 
 def getMapMetadata(mapMetaDataServiceName):
     # Create service handle
-#    mapMetaDataService = rospy.ServiceProxy(mapMetaDataServiceName, GetMapMetaData)
-    mapMetaDataService = rospy.ServiceProxy(mapMetaDataServiceName, GetMap)
+    mapMetaDataService = rospy.ServiceProxy(mapMetaDataServiceName, GetMapMetaData)
 
     response = None
     numTries = 0
@@ -141,8 +141,8 @@ if __name__ == '__main__':
     rospy.loginfo('Initializing exploration')
 
     # Set global constants
-#    mapMetaDataServiceName = rospy.get_param('~mapMetaDataServiceName', '/dynamic_map_metadata')
-    mapMetaDataServiceName = rospy.get_param('~mapMetaDataServiceName', '/dynamic_map')
+    mapMetaDataServiceName = rospy.get_param('~mapMetaDataServiceName', '/dynamic_map_metadata')
+#    mapMetaDataServiceName = rospy.get_param('~mapMetaDataServiceName', '/dynamic_map')
     exploreServiceName = rospy.get_param('~exploreServiceName', '/explore_server')
     moveBaseServiceName = rospy.get_param('~moveBaseServiceName', '/move_base')
     mapFrame = rospy.get_param('~mapFrame', 'map')

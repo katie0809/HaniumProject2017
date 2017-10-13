@@ -5,13 +5,26 @@
 
     <param name="/use_sim_time" value="true"/>
     <!-- ******* AMCL *****
-    <include file="$(find amcl)/examples/amcl_diff.launch"/>-->
+    <include file="$(find amcl)/examples/amcl_diff.launch"/>
+    -->
+    <!--  ************** Navigation  *************** -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find mappingbot)/params/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find mappingbot)/params/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="$(find mappingbot)/params/local_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find mappingbot)/params/global_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find mappingbot)/params/base_local_planner_params.yaml" command="load"/>
 
-    <!--  ************** Navigation  ***************-->
-    <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
+        <remap from="cmd_vel" to="cmd_vel_mux/input/teleop" />
+    </node>
+
+    <!-- ******** Start Explore Server && Explore Cost Map **** -->
+    <include file="$(find mappingbot)/launch/global_map.launch"/>
 
     <!-- *********** Start Turtlebot_gazebo ********
     <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"/>
     -->
+    <!-- *********** Hector Mapping ***** -->
+    <include file="$(find mappingbot)/launch/mapping_default.launch"/>
 
 </launch>
