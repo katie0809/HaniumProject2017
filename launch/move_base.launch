@@ -1,0 +1,48 @@
+<launch>
+    <!--
+    <param name="robot_description" textfile="$(find mappingbot)/urdf/mappingbot.urdf"/>
+    <param name="/use_sim_time" value="true"/>
+
+    <arg name="initial_pose_x" default="2.0"/>
+    <arg name="initial_pose_y" default="2.0"/>
+    <arg name="initial_pose_a" default="0.0"/>
+    -->
+    <!-- *********** Node to Explore **************
+    <node name="explore" pkg="mappingbot" type="frontier_explore_b.py"/>-->
+    <!-- *********** Node to control Arduino ******
+    <node name="control_arduino" pkg="mappingbot" type="control.py"/>-->
+    <!-- *********** Convert Depthimage to Laserscan ********-->
+    <node name="depthimage_to_laserscan" pkg="depthimage_to_laserscan" type="depthimage_to_laserscan">
+        <remap from="image" to="camera/depth_registered/image"/>
+    </node>
+    <!-- *********** TF Broadcast ***************-->
+    <node name="tf1" pkg="tf" type="static_transform_publisher" args="0 0 0.05 0 0 0 1 /base_frame /camera_depth_frame 50"/>
+    <node name="tf2" pkg="tf" type="static_transform_publisher" args="0 0 0.05 0 0 0 1 /base_frame /camera_link 50"/>
+
+    <!-- *********** Robot State Publish ********
+    <node name="robot_state_publisher" type="robot_state_publisher" pkg="robot_state_publisehr" output="screen">
+        <param name="publish_frequency" type="double" value="5.0"/>
+    </node>-->
+
+    <!--  ************** Navigation  ***************
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find mappingbot)/params/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find mappingbot)/params/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="$(find mappingbot)/params/local_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find mappingbot)/params/global_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find mappingbot)/params/base_local_planner_params.yaml" command="load"/>
+    </node>-->
+
+    <!-- *********** Start Kinect Sensor ********** -->
+    <include file="$(find freenect_launch)/launch/freenect.launch"/>
+
+    <!-- ******* AMCL *****
+    <include file="$(find amcl)/examples/amcl_diff.launch"/>-->
+
+    <!-- *********** Hector Mapping ***** -->
+    <include file="$(find mappingbot)/launch/mapping_without_odom.launch"/>
+
+    <!-- ******** Start Explore Server && Explore Cost Map ****
+    <include file="$(find mappingbot)/launch/global_map.launch"/>-->
+
+</launch>
